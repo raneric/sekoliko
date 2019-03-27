@@ -31,14 +31,14 @@
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#user" aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-cog"></i>
-            <span>Users</span>
+            <span>Utilisateur</span>
         </a>
         <div id="user" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Action:</h6>
                 <a class="collapse-item" href="{{ path('user_index') }}">Liste</a>
                 <a class="collapse-item" href="{{ path('user_new') }}">Nouveau Utilisateur</a>
-                <a class="collapse-item" href="{{ path('etudiant_search') }}">Nouveau Etudiant</a>
+                <a class="collapse-item" href="{{ path('etudiant_search') }}">Recherche</a>
             </div>
         </div>
     </li>
@@ -74,11 +74,11 @@
 
     <!-- Nav Item - Matiere Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#classe" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#matieres" aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-book"></i>
-            <span>Matieres</span>
+            <span>Matiere</span>
         </a>
-        <div id="classe" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="matieres" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Action:</h6>
                 <a class="collapse-item" href="{{ path('matiere_index') }}">Liste des matieres</a>

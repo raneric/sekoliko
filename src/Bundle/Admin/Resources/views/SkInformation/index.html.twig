@@ -47,8 +47,7 @@
                                     <span>
                                         <a href="{{ path('info_edit',{"id":info.id}) }}"
                                            class="btn btn-circle btn-primary"><i class="fa fa-edit"></i></a>
-                                        <a href="{{ path('info_delete',{"id":info.id}) }}"
-                                           onclick="confirm('Voulez vous vraiment supprimer?')"
+                                        <a onclick="supprimer('{{ path('info_delete',{"id":info.id}) }}')"
                                            class="btn btn-circle btn-warning"><i class="fa fa-trash"></i></a>
                                     </span>
                                     </div>

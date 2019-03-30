@@ -73,7 +73,7 @@
                                         </a>
                                         {% if is_granted('ROLE_ADMIN') %}
                                             <a class="btn btn-danger remove-elt" title="Supprimer"
-                                               href="{{ path('user_delete', { 'id': user.id }) }}">
+                                               onclick="supprimer('{{ path('user_delete', { 'id': user.id }) }}')">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         {% endif %}
@@ -101,6 +101,10 @@
     {{ parent() }}
 
     <script type="text/javascript">
+        function supprimer(url){
+            confirm("Voulez vous vraiment supprimer ?") ? window.location = url : alert();
+        }
+
         // Call the dataTables jQuery plugin
         $(document).ready(function() {
             $('#dataTable').DataTable();

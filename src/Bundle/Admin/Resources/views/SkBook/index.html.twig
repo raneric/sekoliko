@@ -82,8 +82,7 @@
                                                 <i class="fa fa-undo"></i>
                                             </a>
                                             <a class="btn btn-danger remove-elt" title="Supprimer"
-                                               onclick="confirm('Voulez vous vraiment supprimer?')"
-                                               href="{{ path('book_delete', { 'id': book.id }) }}">
+                                               onclick="supprimer('{{ path('book_delete', { 'id': book.id }) }}')">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         </td>

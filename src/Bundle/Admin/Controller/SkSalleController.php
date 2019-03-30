@@ -160,6 +160,12 @@ class SkSalleController extends Controller
                 $debut_reservation = $request->request->get('debut');
                 $fin_reservation = $request->request->get('fin');
                 $motif_reservation = $request->request->get('motif');
+                if (new \DateTime($debut_reservation) > new \DateTime($fin_reservation)){
+                    $this->getEntityService()->setFlash('error', 'Date debut > Date Fin');
+                    return $this->redirect($this->generateUrl('salle_reservation',array(
+                        'id'=>$skSalle->getId()
+                    )));
+                }
                 $skSalle->setIsReserve(true);
                 $skSalle->setDebReserve(new \DateTime($debut_reservation));
                 $skSalle->setFinReserve(new \DateTime($fin_reservation));

@@ -148,6 +148,10 @@ class SkBookController extends Controller
             $_user = $request->request->get('user');
 
             if ($_form->isSubmitted() && $_form->isValid()) {
+                if (new \DateTime($_date_debut) > new \DateTime($_date_fin)){
+                    $this->getEntityService()->setFlash('error', 'Date debut > Date Fin');
+                    return $this->redirect($this->generateUrl('book_reservation',array('id'=>$skBook->getId())));
+                }
                 $skBook->setIsReserved(true);
                 $_user_s = $_user_manager->getUserById($_user);
                 $skBook->setUser($_user_s);

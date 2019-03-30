@@ -443,7 +443,7 @@ class UserManager
         $_user_ets = $this->_container->get('security.token_storage')->getToken()->getUser()->getEtsNom();
 
         return $this->_entity_manager->createQuery(
-                "SELECT e FROM UserBundle:User e WHERE e.username LIKE :str AND e.etsNom='".$_user_ets."'"
+            "SELECT e FROM UserBundle:User e WHERE e.username LIKE :str AND e.etsNom='".$_user_ets."'"
             )
             ->setParameter('str', '%'.$str.'%')
             ->getResult();

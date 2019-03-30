@@ -8,7 +8,6 @@
 
 namespace App\Shared\Entity;
 
-
 use App\Bundle\User\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -185,6 +184,4 @@ class SkBug
     {
         $this->color = $color;
     }
-
-
 }

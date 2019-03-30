@@ -113,6 +113,4 @@ class SkInformation
     {
         $this->titre = $titre;
     }
-
-
 }

@@ -8,7 +8,6 @@
 
 namespace App\Shared\Form;
 
-
 use App\Shared\Entity\SkBug;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -21,11 +20,11 @@ class SkBugType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('titre',TextType::class,array(
+            ->add('titre', TextType::class, array(
                 'label'=>'Titre de bug ou amelioration',
                 'required'=>true
             ))
-            ->add('description',TextareaType::class,array(
+            ->add('description', TextareaType::class, array(
                 'label'=>'Description de bug',
             ))
             ;

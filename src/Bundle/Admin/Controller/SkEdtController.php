@@ -81,9 +81,9 @@ class SkEdtController extends Controller
                     $_mat = $request->request->get('matiere');
                     $_date_debut = $request->request->get('debut');
                     $_date_fin = $request->request->get('fin');
-                    if (new \DateTime($_date_debut) > new \DateTime($_date_fin)){
+                    if (new \DateTime($_date_debut) > new \DateTime($_date_fin)) {
                         $this->getEntityService()->setFlash('error', 'Date debut > Date Fin');
-                        return $this->redirect($this->generateUrl('edt_new',array('id'=>$skClasse->getId())));
+                        return $this->redirect($this->generateUrl('edt_new', array('id'=>$skClasse->getId())));
                     }
                     $_mat = $this->getDoctrine()->getRepository(SkMatiere::class)->find($_mat);
                     $_edt->setEtsNom($_user_ets);

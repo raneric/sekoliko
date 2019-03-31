@@ -66,10 +66,14 @@ class SkBugController extends Controller
             if ($_status === "Important") {
                 $_bug->setColor("green");
             } elseif ($_status === "Features") {
+                $_bug->setColor("yellow");
+            } elseif($_status === "Fix"){
                 $_bug->setColor("blue");
-            } else {
+            }else {
                 $_bug->setColor("red");
             }
+
+
             $_bug->setStatus($_status);
             $_bug->setDateAjout(new \DateTime('now'));
             $_bug->setUser($_user);
@@ -108,6 +112,15 @@ class SkBugController extends Controller
 
         if ($_form->isSubmitted() && $_form->isValid()) {
             $_status = $request->request->get('status');
+            if ($_status === "Important") {
+                $_bug->setColor("green");
+            } elseif ($_status === "Features") {
+                $_bug->setColor("yellow");
+            } elseif($_status === "Fix"){
+                $_bug->setColor("blue");
+            }else {
+                $_bug->setColor("red");
+            }
             $_bug->setStatus($_status);
             try {
                 $this->getEntityService()->saveEntity($_bug, 'update');

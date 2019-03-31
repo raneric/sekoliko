@@ -60,7 +60,7 @@ class SkNoteController extends Controller
         /*
          * Secure to etudiant connected
          */
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
             return $this->redirectToRoute('sk_login');
         }
 
@@ -125,7 +125,7 @@ class SkNoteController extends Controller
         /*
          * Secure to etudiant connected
          */
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
             return $this->redirectToRoute('sk_login');
         }
 
@@ -188,7 +188,7 @@ class SkNoteController extends Controller
         /*
          * Secure to etudiant connected
          */
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
             return $this->redirectToRoute('sk_login');
         }
         $_etudiant_classe = $skNote->getEtudiant()->getClasse()->getId();

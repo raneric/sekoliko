@@ -28,18 +28,13 @@
                     <h6 class="m-0 font-weight-bold text-primary text-center">Liste des notes
                         de {{ etudiant.etudiant.usrLastname }}</h6>
                     {# Bouton création #}
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_PROFS') %}
                         <div class="row add-btn-top-list">
                             <a href="{{ path('note_new',{'id':etudiant.id}) }}" class="btn btn-primary">
                                 Ajouter note pour {{ etudiant.etudiant.usrLastname }}
                             </a>
                         </div>
                     {% endif %}
-                    <div class="box-header">
-                        <div class="list-count">
-                            <span class="title-count-text"> TOTAL: </span><span class="title-count"></span>
-                        </div>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

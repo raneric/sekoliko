@@ -67,6 +67,8 @@ class SkBugController extends Controller
                 $_bug->setColor("green");
             } elseif ($_status === "Features") {
                 $_bug->setColor("yellow");
+            } elseif($_status === "En cours"){
+                $_bug->setColor("orange");
             } elseif($_status === "Fix"){
                 $_bug->setColor("blue");
             }else {
@@ -118,6 +120,8 @@ class SkBugController extends Controller
                 $_bug->setColor("yellow");
             } elseif($_status === "Fix"){
                 $_bug->setColor("blue");
+            } elseif($_status === "En cours"){
+                $_bug->setColor("orange");
             }else {
                 $_bug->setColor("red");
             }

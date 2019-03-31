@@ -31,8 +31,15 @@ class SkClassController extends Controller
     }
 
     /**
+     * @return mixed
+     */
+    public function getUserConnected()
+    {
+        return $this->get('security.token_storage')->getToken()->getUser();
+    }
+
+    /**
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @throws \Exception
      */
     public function indexAction()
@@ -43,6 +50,7 @@ class SkClassController extends Controller
             'class_list' => $_class_list,
         ));
     }
+
 
     /**
      * @param Request $request

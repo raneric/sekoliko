@@ -40,6 +40,16 @@ class SkMatiereController extends Controller
      */
     public function indexAction()
     {
+
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            $_profs = $this->getUserConnected();
+            $_matier_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array('matProf'=>$_profs));
+//            dump($_matier_liste);die();
+            return $this->render('AdminBundle:SkMatiere:index.html.twig', array(
+                'matiere_liste' => $_matier_liste,
+            ));
+        }
+
         $_matier_liste = $this->getEntityService()->getAllListByEts(SkMatiere::class);
 
         return $this->render('AdminBundle:SkMatiere:index.html.twig', array(

@@ -64,14 +64,18 @@
                                     <td>{{ etudiant.etudiant.usrPhone }}</td>
                                     <td>{{ etudiant.etudiant.usrAddress }}</td>
                                     <td class="kl-action-button-bloc">
-                                        <a class="btn btn-success" title="Modifier"
-                                           href="{{ path('etudiant_edit', { 'id': etudiant.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <a class="btn btn-secondary" title="Ajouter un note pour {{ etudiant.etudiant.usrFirstname }}"
-                                           href="{{ path('note_new', { 'id': etudiant.id }) }}">
-                                            <i class="fa fa-book"></i>
-                                        </a>
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            <a class="btn btn-success" title="Modifier"
+                                               href="{{ path('etudiant_edit', { 'id': etudiant.id }) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_PROFS') %}
+                                            <a class="btn btn-secondary" title="Ajouter un note pour {{ etudiant.etudiant.usrFirstname }}"
+                                               href="{{ path('note_new', { 'id': etudiant.id }) }}">
+                                                <i class="fa fa-book"></i>
+                                            </a>
+                                        {% endif %}
                                         <a class="btn btn-warning" title="Voire les notes de {{ etudiant.etudiant.usrFirstname }}"
                                            href="{{ path('etudiant_note', { 'id': etudiant.id }) }}">
                                             <i class="fa fa-list"></i>

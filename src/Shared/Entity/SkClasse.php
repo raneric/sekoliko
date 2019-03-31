@@ -37,6 +37,15 @@ class SkClasse
     private $classeNom;
 
     /**
+     * @var SkMatiere
+     * @ORM\ManyToMany(targetEntity="App\Shared\Entity\SkMatiere")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="matiere", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     */
+    private $matiere;
+
+    /**
      * @var SkNiveau
      * @ORM\ManyToOne(targetEntity="App\Shared\Entity\SkNiveau")
      * @ORM\JoinColumns({
@@ -92,4 +101,22 @@ class SkClasse
     {
         $this->niveau = $niveau;
     }
+
+    /**
+     * @return SkMatiere
+     */
+    public function getMatiere()
+    {
+        return $this->matiere;
+    }
+
+    /**
+     * @param SkMatiere $matiere
+     */
+    public function setMatiere($matiere)
+    {
+        $this->matiere = $matiere;
+    }
+
+
 }

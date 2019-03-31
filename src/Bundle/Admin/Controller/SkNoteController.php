@@ -57,12 +57,18 @@ class SkNoteController extends Controller
      */
     public function addNoteAction(Request $request, SkEtudiant $etudiant)
     {
-        $_ets_nom = $this->getUserConnected()->getEtsNom();
-        $_etudiant_classe = $etudiant->getClasse()->getId();
-        $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
-            'etsNom' => $_ets_nom,
-            'matClasse' => $_etudiant_classe,
-        ));
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            $_profs = $this->getUserConnected();
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array('matProf'=>$_profs));
+        } else{
+            $_ets_nom = $this->getUserConnected()->getEtsNom();
+            $_etudiant_classe = $etudiant->getClasse()->getId();
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'etsNom' => $_ets_nom,
+                'matClasse' => $_etudiant_classe,
+            ));
+        }
+
         $_note = new SkNote();
 
         $_form = $this->createForm(SkNoteType::class, $_note);

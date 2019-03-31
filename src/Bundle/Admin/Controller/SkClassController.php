@@ -63,6 +63,13 @@ class SkClassController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_classe = new SkClasse();
         $_form = $this->createForm(SkClasseType::class, $_classe);
         $_form->handleRequest($request);
@@ -102,6 +109,13 @@ class SkClassController extends Controller
      */
     public function updateAction(Request $request, SkClasse $skClasse)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkClasseType::class, $skClasse);
         $_form->handleRequest($request);
 
@@ -136,6 +150,13 @@ class SkClassController extends Controller
      */
     public function deleteAction(SkClasse $skClasse)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_del_classe = $this->getEntityService()->deleteEntity($skClasse, '');
         if (true === $_del_classe) {
             $this->getEntityService()->setFlash('success', 'Classe supprimée avec success');

@@ -51,6 +51,12 @@ class SkInformationController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
         $_new_info = new SkInformation();
         $_user_ets = $this->getUserConnected()->getEtsNom();
         $_form = $this->createForm(SkInformationType::class, $_new_info);
@@ -81,6 +87,13 @@ class SkInformationController extends Controller
      */
     public function updateAction(Request $request, SkInformation $information)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkInformationType::class, $information);
         $_form->handleRequest($request);
         if ($_form->isSubmitted() && $_form->isValid()) {

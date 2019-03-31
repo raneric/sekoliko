@@ -46,6 +46,13 @@ class SkBookController extends Controller
 
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_book = new SkBook();
         $_form = $this->createForm(SkBookType::class, $_book);
         $_ets_nom = $this->getUserConnected()->getEtsNom();
@@ -78,6 +85,13 @@ class SkBookController extends Controller
      */
     public function editAction(Request $request, SkBook $skBook)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkBookType::class, $skBook);
         $_form->handleRequest($request);
         if ($_form->isSubmitted() && $_form->isValid()) {
@@ -111,6 +125,13 @@ class SkBookController extends Controller
      */
     public function deleteAction(SkBook $skBook)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_delete_book = $this->getEntityService()->deleteEntity($skBook, '');
         if (true === $_delete_book) {
             $this->getEntityService()->setFlash('success', 'Ajout livre avec succes');

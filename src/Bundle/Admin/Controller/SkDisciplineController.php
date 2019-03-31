@@ -54,6 +54,13 @@ class SkDisciplineController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_user_ets = $this->getUserConnected()->getEtsNom();
 
         $_discipline = new SkDiscipline();
@@ -86,6 +93,13 @@ class SkDisciplineController extends Controller
      */
     public function updateAction(Request $request, SkDiscipline $_discipline)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkDisciplineFormType::class, $_discipline);
         $_form->handleRequest($request);
 
@@ -114,6 +128,13 @@ class SkDisciplineController extends Controller
      */
     public function deleteAction(SkDiscipline $_discipline)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_discipline_delete = $this->getEntityService()->deleteEntity($_discipline, '');
         if (true === $_discipline_delete) {
             try {

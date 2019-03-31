@@ -69,6 +69,13 @@ class SkEdtController extends Controller
      */
     public function addEdtAction(Request $request, SkClasse $skClasse)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         try {
             $_edt = new SkEdt();
             $_user_ets = $this->getUserConnected()->getEtsNom();

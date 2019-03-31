@@ -214,8 +214,6 @@ class SkNoteController extends Controller
            'etudiant' => $_user_classe[0],
         ));
 
-//        dump($_note_liste);die();
-
         return $this->render('@Admin/SkEtudiant/etudiant.note.html.twig', array(
             'note_liste' => $_note_liste,
         ));

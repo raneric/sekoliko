@@ -49,6 +49,13 @@ class SkBugController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_bug = new SkBug();
         $_form = $this->createForm(SkBugType::class, $_bug);
         $_form->handleRequest($request);
@@ -89,6 +96,13 @@ class SkBugController extends Controller
      */
     public function updateAction(Request $request, SkBug $_bug)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkBugType::class, $_bug);
         $_form->handleRequest($request);
 

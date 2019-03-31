@@ -84,6 +84,12 @@ class UserController extends Controller
      */
     public function editAction(User $_user)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
         $_id_user = $this->getUserConnected()->getId();
         $_user_role = $this->getUserRole();
 
@@ -120,6 +126,13 @@ class UserController extends Controller
      */
     public function newAction(Request $_request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_user_manager = $this->getUserMetier();
 
         $_user = new User();
@@ -186,7 +199,7 @@ class UserController extends Controller
 
     /**
      * @param Request $_request
-     * @param User    $_user
+     * @param User $_user
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      *
@@ -196,6 +209,18 @@ class UserController extends Controller
     {
         $_user_role = $this->getUserRole();
         $_user_manager = $this->getUserMetier();
+
+        /*
+         * Secure to etudiant and profs connected
+         */
+        if (
+            $this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_PROFS')
+        ) {
+            if ($this->getUserConnected()->getId() !== $_user->getId()) {
+                return $this->redirectToRoute('sk_login');
+            }
+        }
 
         if ($_user->getId() === 46 || $_user->getId() === 62) {
             $_user_manager->setFlash('error', 'Vous n\'avez pas le droit pour modifier cette utilisateur test');
@@ -265,7 +290,7 @@ class UserController extends Controller
 
     /**
      * @param Request $_request
-     * @param User    $_user
+     * @param User $_user
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
@@ -273,6 +298,18 @@ class UserController extends Controller
      */
     public function deleteAction(Request $_request, User $_user)
     {
+        /*
+         * Secure to etudiant and profs connected
+         */
+        if (
+            $this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_PROFS')
+        ) {
+            if ($this->getUserConnected()->getId() !== $_user->getId()) {
+                return $this->redirectToRoute('sk_login');
+            }
+        }
+
         // Récupérer manager
         $_user_manager = $this->getUserMetier();
         if ($_user->getId() === 46 || $_user->getId() === 62) {

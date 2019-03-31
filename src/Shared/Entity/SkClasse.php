@@ -117,6 +117,4 @@ class SkClasse
     {
         $this->matiere = $matiere;
     }
-
-
 }

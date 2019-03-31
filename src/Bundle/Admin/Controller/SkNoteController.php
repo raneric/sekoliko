@@ -73,7 +73,7 @@ class SkNoteController extends Controller
                 'matProf'=>$_profs,
                 'etsNom' => $_ets_nom,
             ));
-        } else{
+        } else {
             $_ets_nom = $this->getUserConnected()->getEtsNom();
             $_etudiant_classe = $etudiant->getClasse()->getId();
             $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
@@ -141,7 +141,7 @@ class SkNoteController extends Controller
                 'matProf'=>$_profs,
                 'etsNom' => $_ets_nom,
             ));
-        }else{
+        } else {
             $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
                 'etsNom' => $_ets_nom,
                 'matClasse' => $_etudiant_classe,

@@ -57,9 +57,22 @@ class SkNoteController extends Controller
      */
     public function addNoteAction(Request $request, SkEtudiant $etudiant)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
+        /*
+         * Check if profs is connected
+         */
         if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
             $_profs = $this->getUserConnected();
-            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array('matProf'=>$_profs));
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'matProf'=>$_profs,
+                'etsNom' => $_ets_nom,
+            ));
         } else{
             $_ets_nom = $this->getUserConnected()->getEtsNom();
             $_etudiant_classe = $etudiant->getClasse()->getId();
@@ -108,12 +121,32 @@ class SkNoteController extends Controller
      */
     public function editAction(Request $request, SkNote $skNote)
     {
+
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_ets_nom = $this->getUserConnected()->getEtsNom();
         $_etudiant_classe = $skNote->getEtudiant()->getClasse()->getId();
-        $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
-            'etsNom' => $_ets_nom,
-            'matClasse' => $_etudiant_classe,
-        ));
+
+        /*
+         * Check if profs is connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            $_profs = $this->getUserConnected();
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'matProf'=>$_profs,
+                'etsNom' => $_ets_nom,
+            ));
+        }else{
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'etsNom' => $_ets_nom,
+                'matClasse' => $_etudiant_classe,
+            ));
+        }
         $_form = $this->createForm(SkNoteType::class, $skNote);
         $_form->handleRequest($request);
 
@@ -151,6 +184,13 @@ class SkNoteController extends Controller
      */
     public function deleteAction(SkNote $skNote)
     {
+
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            return $this->redirectToRoute('sk_login');
+        }
         $_etudiant_classe = $skNote->getEtudiant()->getClasse()->getId();
         $_delete_note = $this->getEntityService()->deleteEntity($skNote, '');
         if (true === $_delete_note) {

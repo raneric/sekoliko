@@ -25,12 +25,12 @@
         <form action="" method="POST" class="form-search">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary text-center">Listes des matieres</h6>
+                    <h6 class="m-0 font-weight-bold text-primary text-center">Liste des matieres</h6>
                     {# Bouton création #}
                     {% if is_granted('ROLE_ADMIN') %}
                         <div class="row add-btn-top-list">
                             <a href="{{ path('matiere_new') }}" class="btn btn-primary">
-                                Créer un matiere
+                                Ajouter une matière
                             </a>
                         </div>
                     {% endif %}
@@ -46,10 +46,16 @@
                             <thead>
                             <tr>
                                 <th></th>
-                                <th>Matiere</th>
-                                <th>Coefficient</th>
-                                <th>Profs</th>
-                                <th>Action</th>
+                                <th>Matières</th>
+                                <th>Coefficients</th>
+                                <th>
+                                    {% if is_granted('ROLE_PROFS') %}
+                                        classe
+                                    {% else %}
+                                        Profs
+                                    {% endif %}
+                                </th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -60,15 +66,31 @@
                                     </td>
                                     <td>{{ matiere.matNom }}</td>
                                     <td>{{ matiere.matCoeff }}</td>
-                                    <td>{{ matiere.matProf ?  matiere.matProf.usrFirstname : '' }}</td>
+                                    <td>
+                                        {% if is_granted('ROLE_PROFS') %}
+                                            {{ matiere.matClasse.classeNom }}
+                                        {% else %}
+                                            {{ matiere.matProf ?  matiere.matProf.usrFirstname : '' }}
+                                        {% endif %}
+                                    </td>
                                     <td class="kl-action-button-bloc">
-                                        <a class="btn btn-success" title="Modifier"
-                                           href="{{ path('matiere_edit', { 'id': matiere.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
+                                        {% if is_granted('ROLE_PROFS') %}
+                                            <a class="btn btn-success" title="Voir emploi du temps"
+                                               href="{{ path('edt_classe', { 'id': matiere.matClasse.id }) }}">
+                                                <i class="fa fa-calendar"></i>
+                                            </a>
+                                            <a class="btn btn-info" title="Voir mes etudiants"
+                                               href="{{ path('etudiant_liste', { 'id': matiere.matClasse.id }) }}">
+                                                <i class="fa fa-user"></i>
+                                            </a>
+                                        {% endif %}
                                         {% if is_granted('ROLE_ADMIN') %}
+                                            <a class="btn btn-success" title="Modifier"
+                                               href="{{ path('matiere_edit', { 'id': matiere.id }) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
                                             <a class="btn btn-danger remove-elt" title="Supprimer"
-                                               href="{{ path('matiere_delete', { 'id': matiere.id }) }}">
+                                               onclick="supprimer('{{ path('matiere_delete', { 'id': matiere.id }) }}')">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         {% endif %}

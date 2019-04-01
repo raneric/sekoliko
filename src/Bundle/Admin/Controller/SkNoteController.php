@@ -57,12 +57,31 @@ class SkNoteController extends Controller
      */
     public function addNoteAction(Request $request, SkEtudiant $etudiant)
     {
-        $_ets_nom = $this->getUserConnected()->getEtsNom();
-        $_etudiant_classe = $etudiant->getClasse()->getId();
-        $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
-            'etsNom' => $_ets_nom,
-            'matClasse' => $_etudiant_classe,
-        ));
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
+        /*
+         * Check if profs is connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            $_profs = $this->getUserConnected();
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'matProf'=>$_profs,
+                'etsNom' => $_ets_nom,
+            ));
+        } else {
+            $_ets_nom = $this->getUserConnected()->getEtsNom();
+            $_etudiant_classe = $etudiant->getClasse()->getId();
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'etsNom' => $_ets_nom,
+                'matClasse' => $_etudiant_classe,
+            ));
+        }
+
         $_note = new SkNote();
 
         $_form = $this->createForm(SkNoteType::class, $_note);
@@ -102,12 +121,32 @@ class SkNoteController extends Controller
      */
     public function editAction(Request $request, SkNote $skNote)
     {
+
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_ets_nom = $this->getUserConnected()->getEtsNom();
         $_etudiant_classe = $skNote->getEtudiant()->getClasse()->getId();
-        $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
-            'etsNom' => $_ets_nom,
-            'matClasse' => $_etudiant_classe,
-        ));
+
+        /*
+         * Check if profs is connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            $_profs = $this->getUserConnected();
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'matProf'=>$_profs,
+                'etsNom' => $_ets_nom,
+            ));
+        } else {
+            $_matiere_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array(
+                'etsNom' => $_ets_nom,
+                'matClasse' => $_etudiant_classe,
+            ));
+        }
         $_form = $this->createForm(SkNoteType::class, $skNote);
         $_form->handleRequest($request);
 
@@ -145,6 +184,13 @@ class SkNoteController extends Controller
      */
     public function deleteAction(SkNote $skNote)
     {
+
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
         $_etudiant_classe = $skNote->getEtudiant()->getClasse()->getId();
         $_delete_note = $this->getEntityService()->deleteEntity($skNote, '');
         if (true === $_delete_note) {
@@ -167,8 +213,6 @@ class SkNoteController extends Controller
         $_note_liste = $this->getDoctrine()->getRepository(SkNote::class)->findBy(array(
            'etudiant' => $_user_classe[0],
         ));
-
-//        dump($_note_liste);die();
 
         return $this->render('@Admin/SkEtudiant/etudiant.note.html.twig', array(
             'note_liste' => $_note_liste,

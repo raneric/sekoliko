@@ -40,6 +40,15 @@ class SkMatiereController extends Controller
      */
     public function indexAction()
     {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_PROFS')) {
+            $_profs = $this->getUserConnected();
+            $_matier_liste = $this->getDoctrine()->getRepository(SkMatiere::class)->findBy(array('matProf'=>$_profs));
+
+            return $this->render('AdminBundle:SkMatiere:index.html.twig', array(
+                'matiere_liste' => $_matier_liste,
+            ));
+        }
+
         $_matier_liste = $this->getEntityService()->getAllListByEts(SkMatiere::class);
 
         return $this->render('AdminBundle:SkMatiere:index.html.twig', array(
@@ -103,6 +112,13 @@ class SkMatiereController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_user_ets = $this->getUserConected()->getEtsNom();
         $_profs_list = $this->getProfs();
         $_classe_list = $this->getDoctrine()->getRepository(SkClasse::class)->findBy(array('etsNom' => $_user_ets));
@@ -147,6 +163,13 @@ class SkMatiereController extends Controller
      */
     public function updateAction(Request $request, SkMatiere $skMatiere)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_profs_liste = $this->getProfs();
         $_user_ets = $this->getUserConected()->getEtsNom();
         $_classe_list = $this->getDoctrine()->getRepository(SkClasse::class)->findBy(array('etsNom' => $_user_ets));
@@ -189,6 +212,13 @@ class SkMatiereController extends Controller
      */
     public function deleteAction(SkMatiere $skMatiere)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_del_matiere = $this->getEntityService()->deleteEntity($skMatiere, '');
 
         if (true === $_del_matiere) {

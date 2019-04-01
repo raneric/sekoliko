@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 class SkClasse
 {
     use SkEtablissement;
+
     /**
      * @var int
      *
@@ -34,6 +35,15 @@ class SkClasse
      * @ORM\Column(name="classe_nom", type="string", length=100, nullable=false)
      */
     private $classeNom;
+
+    /**
+     * @var SkMatiere
+     * @ORM\ManyToMany(targetEntity="App\Shared\Entity\SkMatiere")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="matiere", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     */
+    private $matiere;
 
     /**
      * @var SkNiveau
@@ -90,5 +100,21 @@ class SkClasse
     public function setNiveau($niveau)
     {
         $this->niveau = $niveau;
+    }
+
+    /**
+     * @return SkMatiere
+     */
+    public function getMatiere()
+    {
+        return $this->matiere;
+    }
+
+    /**
+     * @param SkMatiere $matiere
+     */
+    public function setMatiere($matiere)
+    {
+        $this->matiere = $matiere;
     }
 }

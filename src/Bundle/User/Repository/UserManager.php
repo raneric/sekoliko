@@ -433,7 +433,9 @@ class UserManager
 
     /**
      * @param $str
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function findEntitiesByString($str)
@@ -441,9 +443,17 @@ class UserManager
         $_user_ets = $this->_container->get('security.token_storage')->getToken()->getUser()->getEtsNom();
 
         return $this->_entity_manager->createQuery(
-                "SELECT e FROM UserBundle:User e WHERE e.username LIKE :str AND e.etsNom='".$_user_ets."'"
+            "SELECT e FROM UserBundle:User e WHERE e.username LIKE :str AND e.etsNom='".$_user_ets."'"
             )
             ->setParameter('str', '%'.$str.'%')
             ->getResult();
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function findEtsList()
+    {
+        return $this->getRepository()->createQueryBuilder('q')->select('DISTINCT(q.etsNom)');
     }
 }

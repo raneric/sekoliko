@@ -25,20 +25,16 @@
         <form action="" method="POST" class="form-search">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary text-center">Listes note {{ etudiant.etudiant.usrLastname }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary text-center">Liste des notes
+                        de {{ etudiant.etudiant.usrLastname }}</h6>
                     {# Bouton création #}
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_PROFS') %}
                         <div class="row add-btn-top-list">
                             <a href="{{ path('note_new',{'id':etudiant.id}) }}" class="btn btn-primary">
                                 Ajouter note pour {{ etudiant.etudiant.usrLastname }}
                             </a>
                         </div>
                     {% endif %}
-                    <div class="box-header">
-                        <div class="list-count">
-                            <span class="title-count-text"> TOTAL: </span><span class="title-count"></span>
-                        </div>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -62,13 +58,13 @@
                                     <td>{{ note.noteVal }}</td>
                                     <td>{{ note.matNom.matCoeff }}</td>
                                     <td class="kl-action-button-bloc">
-                                        <a class="btn btn-primary" title="Modifier"
-                                           href="{{ path('note_edit', { 'id': note.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        {% if is_granted('ROLE_ADMIN') %}
+                                        {% if is_granted('ROLE_PROFS') %}
+                                            <a class="btn btn-primary" title="Modifier"
+                                               href="{{ path('note_edit', { 'id': note.id }) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
                                             <a class="btn btn-danger remove-elt" title="Supprimer"
-                                               href="{{ path('note_delete', { 'id': note.id }) }}">
+                                               onclick="supprimer('{{ path('note_delete', { 'id': note.id }) }}')">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         {% endif %}
@@ -89,7 +85,7 @@
 
     <script type="text/javascript">
         // Call the dataTables jQuery plugin
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#dataTable').DataTable();
         });
 

@@ -31,8 +31,15 @@ class SkClassController extends Controller
     }
 
     /**
+     * @return mixed
+     */
+    public function getUserConnected()
+    {
+        return $this->get('security.token_storage')->getToken()->getUser();
+    }
+
+    /**
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @throws \Exception
      */
     public function indexAction()
@@ -43,6 +50,7 @@ class SkClassController extends Controller
             'class_list' => $_class_list,
         ));
     }
+
 
     /**
      * @param Request $request
@@ -55,6 +63,13 @@ class SkClassController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_classe = new SkClasse();
         $_form = $this->createForm(SkClasseType::class, $_classe);
         $_form->handleRequest($request);
@@ -94,6 +109,13 @@ class SkClassController extends Controller
      */
     public function updateAction(Request $request, SkClasse $skClasse)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkClasseType::class, $skClasse);
         $_form->handleRequest($request);
 
@@ -128,6 +150,13 @@ class SkClassController extends Controller
      */
     public function deleteAction(SkClasse $skClasse)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_del_classe = $this->getEntityService()->deleteEntity($skClasse, '');
         if (true === $_del_classe) {
             $this->getEntityService()->setFlash('success', 'Classe supprimée avec success');
@@ -237,7 +266,8 @@ class SkClassController extends Controller
                             $this->getEntityService()->setFlash('success', 'success add user');
                         } catch (\Exception $exception) {
                             $this->getEntityService()->setFlash('error', 'Utilisateur existe déjà email ou nom d\'utilisateur existe');
-                            return $this->redirect($this->generateUrl('classe_etudiant_new',array('id'=>$skClasse->getId())));
+
+                            return $this->redirect($this->generateUrl('classe_etudiant_new', array('id' => $skClasse->getId())));
                         }
                         try {
                             $this->getEntityService()->saveEntity($_etudiant, 'new');

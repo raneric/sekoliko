@@ -25,12 +25,12 @@
         <form action="" method="POST" class="form-search">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary text-center">Listes des guides</h6>
+                    <h6 class="m-0 font-weight-bold text-primary text-center">Liste des guides</h6>
                     {# Bouton création #}
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_SUPERADMIN') %}
                         <div class="row add-btn-top-list">
                             <a href="{{ path('guide_new') }}" class="btn btn-primary">
-                                Créer un guidee
+                                Ajouter un guide
                             </a>
                         </div>
                     {% endif %}
@@ -42,11 +42,11 @@
                             {% for guide in listguide %}
                                 <tr>
                                     <td>{{ guide.description }}</td>
-                                    {% if is_granted('ROLE_ADMIN') %}
+                                    {% if is_granted('ROLE_SUPERADMIN') %}
                                     <td>
                                         <a href="{{ path('guide_edit',{"id":guide.id}) }}"
                                            class="btn btn-circle btn-primary"><i class="fa fa-edit"></i></a>
-                                        <a href="{{ path('guide_delete',{"id":guide.id}) }}"
+                                        <a onclick="supprimer('{{ path('guide_delete',{"id":guide.id}) }}')"
                                            class="btn btn-circle btn-warning"><i class="fa fa-trash"></i></a>
                                     </td>
                                     {% endif %}

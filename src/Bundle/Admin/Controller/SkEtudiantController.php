@@ -116,6 +116,13 @@ class SkEtudiantController extends Controller
      */
     public function newAction(Request $request, User $user)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         try {
             $_ets = $this->getUserConnected()->getEtsNom();
             $_classe_list = $this->getDoctrine()->getRepository(SkClasse::class)->findBy(array('etsNom' => $_ets));
@@ -160,6 +167,13 @@ class SkEtudiantController extends Controller
      */
     public function updateAction(Request $request, SkEtudiant $skEtudiant)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_ets = $this->getUserConnected()->getEtsNom();
         $_classe_list = $this->getDoctrine()->getRepository(SkClasse::class)->findBy(array('etsNom' => $_ets));
 

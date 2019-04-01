@@ -25,7 +25,7 @@
         <form action="" method="POST" class="form-search">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary text-center">Listes des étudiants en {{ classe.classeNom }}</h6>
+                    <h6 class="m-0 font-weight-bold text-primary text-center">Liste des étudiants en {{ classe.classeNom }}</h6>
                     {# Bouton création #}
                     {% if is_granted('ROLE_ADMIN') %}
                         <div class="row add-btn-top-list">
@@ -50,7 +50,7 @@
                                 <th>Prénom</th>
                                 <th>Contact</th>
                                 <th>Adresse</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -64,21 +64,25 @@
                                     <td>{{ etudiant.etudiant.usrPhone }}</td>
                                     <td>{{ etudiant.etudiant.usrAddress }}</td>
                                     <td class="kl-action-button-bloc">
-                                        <a class="btn btn-success" title="Modifier"
-                                           href="{{ path('etudiant_edit', { 'id': etudiant.id }) }}">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        <a class="btn btn-secondary" title="Ajouter un note pour {{ etudiant.etudiant.usrFirstname }}"
-                                           href="{{ path('note_new', { 'id': etudiant.id }) }}">
-                                            <i class="fa fa-book"></i>
-                                        </a>
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                            <a class="btn btn-success" title="Modifier"
+                                               href="{{ path('etudiant_edit', { 'id': etudiant.id }) }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if is_granted('ROLE_PROFS') %}
+                                            <a class="btn btn-secondary" title="Ajouter un note pour {{ etudiant.etudiant.usrFirstname }}"
+                                               href="{{ path('note_new', { 'id': etudiant.id }) }}">
+                                                <i class="fa fa-book"></i>
+                                            </a>
+                                        {% endif %}
                                         <a class="btn btn-warning" title="Voire les notes de {{ etudiant.etudiant.usrFirstname }}"
                                            href="{{ path('etudiant_note', { 'id': etudiant.id }) }}">
                                             <i class="fa fa-list"></i>
                                         </a>
                                         {% if is_granted('ROLE_ADMIN') %}
-                                            <a class="btn btn-danger remove-elt" title="Supprimer {{ etudiant.etudiant.usrFirstname }}"
-                                               href="{{ path('user_delete', { 'id': etudiant.id }) }}">
+                                            <a class="btn btn-danger remove-elt"
+                                               onclick="supprimer('{{ path('user_delete', { 'id': etudiant.id }) }}')">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         {% endif %}

@@ -44,6 +44,12 @@ class SkNiveauController extends Controller
      */
     public function newAction(Request $request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
         $_niveau = new SkNiveau();
         $_form = $this->createForm(SkNiveauType::class, $_niveau);
         $_form->handleRequest($request);
@@ -78,6 +84,13 @@ class SkNiveauController extends Controller
      */
     public function updateAction(Request $request, SkNiveau $skNiveau)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_form = $this->createForm(SkNiveauType::class, $skNiveau);
         $_form->handleRequest($request);
 
@@ -110,6 +123,13 @@ class SkNiveauController extends Controller
      */
     public function deleteAction(SkNiveau $skNiveau)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_del_niveau = $this->getEntityService()->deleteEntity($skNiveau, '');
         if (true === $_del_niveau) {
             $this->getEntityService()->setFlash('success', 'Niveau supprimée avec success');

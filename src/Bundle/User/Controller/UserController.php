@@ -65,7 +65,6 @@ class UserController extends Controller
 
         $_array_type = array(
             'skRole' => array(
-                RoleName::ID_ROLE_SUPERADMIN,
                 RoleName::ID_ROLE_ADMIN,
             ),
             'etsNom' => $_user_ets,
@@ -85,6 +84,12 @@ class UserController extends Controller
      */
     public function editAction(User $_user)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
         $_id_user = $this->getUserConnected()->getId();
         $_user_role = $this->getUserRole();
 
@@ -103,7 +108,7 @@ class UserController extends Controller
 
         $_template = 'UserBundle:User:edit.html.twig';
         if (RoleName::ID_ROLE_ETUDIANT === $_user_role) {
-            $_template = 'UserBundle:User:esk_member.html.twig';
+            $_template = 'UserBundle:User:edit_member.html.twig';
         }
 
         return $this->render($_template, array(
@@ -121,6 +126,13 @@ class UserController extends Controller
      */
     public function newAction(Request $_request)
     {
+        /*
+         * Secure to etudiant connected
+         */
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT')) {
+            return $this->redirectToRoute('sk_login');
+        }
+
         $_user_manager = $this->getUserMetier();
 
         $_user = new User();
@@ -129,10 +141,19 @@ class UserController extends Controller
 
         if ($_form->isSubmitted() && $_form->isValid()) {
             $_user_ets = $this->container->get('security.token_storage')->getToken()->getUser()->getEtsNom();
-            $_user->setEtsNom($_user_ets);
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERADMIN')) {
+                $_ets_nom = $_request->request->get('etsNom');
+                $_user->setEtsNom($_ets_nom);
+            } else {
+                $_user->setEtsNom($_user_ets);
+            }
 
             $_user_manager->addUser($_user, $_form);
             $_user_manager->setFlash('success', 'Utilisateur ajouté');
+
+            if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERADMIN')) {
+                return $this->redirect($this->generateUrl('dashboard_index'));
+            }
 
             return $this->redirect($this->generateUrl('user_index'));
         }
@@ -144,8 +165,41 @@ class UserController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
+    public function newUserEtsAction(Request $request)
+    {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERADMIN')) {
+            $_srv_entity = $this->get('sk.repository.entity');
+            $_user = new User();
+            $_form = $this->createCreateForm($_user);
+            $_form->handleRequest($request);
+
+            if ($_form->isSubmitted() && $_form->isValid()) {
+                $_ets_nom = $request->request->get('etsNom');
+                $_user->setEtsNom($_ets_nom);
+                $_srv_entity->saveEntity($_user, 'new');
+                $_srv_entity->setFlash('success', 'Utilisateur et établissement ajouté');
+
+                return $this->redirectToRoute('dashboard_index');
+            }
+
+            return $this->render('UserBundle:User:add.html.twig', array(
+                'user' => $_user,
+                'form' => $_form->createView(),
+            ));
+        }
+    }
+
+    /**
      * @param Request $_request
-     * @param User    $_user
+     * @param User $_user
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      *
@@ -153,7 +207,25 @@ class UserController extends Controller
      */
     public function updateAction(Request $_request, User $_user)
     {
+        $_user_role = $this->getUserRole();
         $_user_manager = $this->getUserMetier();
+
+        /*
+         * Secure to etudiant and profs connected
+         */
+        if (
+            $this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_PROFS')
+        ) {
+            if ($this->getUserConnected()->getId() !== $_user->getId()) {
+                return $this->redirectToRoute('sk_login');
+            }
+        }
+
+        if ($_user->getId() === 46 || $_user->getId() === 62) {
+            $_user_manager->setFlash('error', 'Vous n\'avez pas le droit pour modifier cette utilisateur test');
+            return $this->redirectToRoute('user_index');
+        }
 
         if (!$_user) {
             throw $this->createNotFoundException('Unable to find User entity.');
@@ -167,6 +239,9 @@ class UserController extends Controller
             $_user_manager->updateUser($_user, $_esk_form);
 
             $_user_manager->setFlash('success', 'Utilisateur modifié');
+            if (RoleName::ID_ROLE_ETUDIANT === $_user_role) {
+                return $this->redirectToRoute('dashboard_index');
+            }
 
             return $this->redirect($this->generateUrl('user_index'));
         }
@@ -215,7 +290,7 @@ class UserController extends Controller
 
     /**
      * @param Request $_request
-     * @param User    $_user
+     * @param User $_user
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
@@ -223,9 +298,24 @@ class UserController extends Controller
      */
     public function deleteAction(Request $_request, User $_user)
     {
+        /*
+         * Secure to etudiant and profs connected
+         */
+        if (
+            $this->get('security.authorization_checker')->isGranted('ROLE_ETUDIANT') ||
+            $this->get('security.authorization_checker')->isGranted('ROLE_PROFS')
+        ) {
+            if ($this->getUserConnected()->getId() !== $_user->getId()) {
+                return $this->redirectToRoute('sk_login');
+            }
+        }
+
         // Récupérer manager
         $_user_manager = $this->getUserMetier();
-
+        if ($_user->getId() === 46 || $_user->getId() === 62) {
+            $_user_manager->setFlash('error', 'Vous n\'avez pas le droit pour supprimer cette utilisateur');
+            return $this->redirectToRoute('user_index');
+        }
         $_form = $this->createDeleteForm($_user);
         $_form->handleRequest($_request);
 

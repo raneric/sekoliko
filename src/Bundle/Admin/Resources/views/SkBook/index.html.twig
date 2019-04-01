@@ -25,12 +25,12 @@
         <form action="" method="POST" class="form-search">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary text-center">Listes des livres</h6>
+                    <h6 class="m-0 font-weight-bold text-primary text-center">Liste des livres</h6>
                     {# Bouton création #}
                     {% if is_granted('ROLE_ADMIN') %}
                         <div class="row add-btn-top-list">
                             <a href="{{ path('book_new') }}" class="btn btn-primary">
-                                Créer un livre
+                                Ajouter un livre
                             </a>
                         </div>
                     {% endif %}
@@ -47,10 +47,10 @@
                             <thead>
                             <tr>
                                 <th></th>
-                                <th>Nom livre</th>
+                                <th>Titre du livre</th>
                                 <th>Reservé</th>
                                 {% if is_granted('ROLE_ADMIN') %}
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                 {% endif %}
                             </tr>
                             </thead>
@@ -77,11 +77,12 @@
                                                 <i class="fa fa-info"></i>
                                             </a>
                                             <a class="btn btn-warning" title="Supprimer la réservation"
+                                               onclick="confirm('Voulez vous vraiment supprimer?')"
                                                href="{{ path('book_unreserve', { 'id': book.id }) }}">
                                                 <i class="fa fa-undo"></i>
                                             </a>
                                             <a class="btn btn-danger remove-elt" title="Supprimer"
-                                               href="{{ path('book_delete', { 'id': book.id }) }}">
+                                               onclick="supprimer('{{ path('book_delete', { 'id': book.id }) }}')">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         </td>

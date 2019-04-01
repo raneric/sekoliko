@@ -21,5 +21,18 @@ Based on Symfony 4
 
 - Add a documentation in your code 
 
+## TODOS
+- Add import export data (csv)
+
+- Add chart in dashboard
+
+- Add url security
+
+- Log activities (logs)
+
+- Add softdelete
+
+- Ariary net integrations
+
 *Made for all Malagasy kids !!!*
 
